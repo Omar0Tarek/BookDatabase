@@ -1,25 +1,25 @@
-//Initializing the App
+//**Initializing the App
 const express = require('express');
 const bodyParser = require("body-parser");
 const router = express.Router();
 const app = express();
 
-//Fixing path problem for images
+//**Fixing path problem for images
 var path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Using bodyParser as MiddleWare for parsing post requests
+//**Using bodyParser as MiddleWare for parsing post requests
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-//Setting Default Page to home
+//**Setting Default Page to home
 //app.set('view engine', 'ejs');
 app.get('/', (req, res)=>{ 
 	res.render('login.ejs'); 
 });
- 
 
-//Setting Rounting
+
+//**Setting Rounting
 /*
 router.get('/handle',(request,response) => {
     //code to perform particular action.
@@ -83,17 +83,18 @@ router.get('/sun',function(req,res){
 	res.render('sun.ejs');
 });
 
-//POST requests
+//**POST requests
+/*
 router.post('/handle',(request,response) => {
     //code to perform particular action.
     //To access POST variable use req.body()methods.
-    console.log(request.body);
+	console.log(request.body);
 });
+*/
 
 router.post('/register',function(req,res){
 	var user = req.body.username;
 	var pass = req.body.password;
-	console.log(user + " " + pass);
 
 	var exist = 0;
 	const fs = require('fs');
@@ -101,13 +102,14 @@ router.post('/register',function(req,res){
 		var content = JSON.parse(data);
 		for(var i = 0; i < content.length; i++){
 			var myobject = content[i];
-			console.log(myobject);
 			if(myobject.username === user)
 				exist = 1;
 		}
-		console.log(exist);
 		if(exist == 1) {
-			res.send("User Already Registered");
+			//res.send("User Already Registered");
+			const alert = require('alert');
+			alert("User Already Registered");
+			res.render('registration.ejs');
 		} else {
 			content.push({username: user, password: pass});
 			let write = JSON.stringify(content);
@@ -119,8 +121,8 @@ router.post('/register',function(req,res){
 
 app.use('/', router);
 
-//Running the app on localhost
-var server = app.listen(8080/*, function(){ 
-    console.log('listining to port 4000') 
-}*/);
+//**Running the app on localhost
+var server = app.listen(8080, function(){ 
+    //console.log('listining to port 4000') 
+});
 
