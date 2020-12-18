@@ -106,15 +106,32 @@ router.post('/register',function(req,res){
 				exist = 1;
 		}
 		if(exist == 1) {
-			//res.send("User Already Registered");
-			const alert = require('alert');
-			alert("User Already Registered");
-			res.render('registration.ejs');
+			res.redirect('/registration');
 		} else {
 			content.push({username: user, password: pass});
 			let write = JSON.stringify(content);
 			fs.writeFileSync('users.json', write);
-			res.render('home.ejs');
+			res.redirect('/login');
+		}
+	});
+});
+router.post('/login',function(req,res){
+	var user = req.body.username;
+	var pass = req.body.password;
+
+	var exist = 0;
+	const fs = require('fs');
+	fs.readFile("users.json", 'utf8', function(err, data) {
+		var content = JSON.parse(data);
+		for(var i = 0; i < content.length; i++){
+			var myobject = content[i];
+			if(myobject.username == user && myobject.password == pass)
+				exist = 1;
+		}
+		if(exist == 1) {
+			res.redirect('/home');
+		} else {
+			res.redirect('/login');	
 		}
 	});
 });
