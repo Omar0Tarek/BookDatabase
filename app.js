@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var session = require('express-session');
 var fs = require('fs');
 var app = express();
 
@@ -9,66 +10,109 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({secret: 'username', resave: true, saveUninitialized: true}));
 
 
 app.get('/',function(req, res){ 
-	res.render('login.ejs'); 
+	if(req.session.username)
+		res.redirect('/home');
+	else
+		res.redirect('/login');
 });
 
 app.get('/dune',function(req,res){
-	res.render('dune.ejs');
+	if(req.session.username)
+		res.render('dune');
+	else
+		res.redirect('/');
 });
 
 app.get('/fiction',function(req,res){
-	res.render('fiction.ejs');
+	if(req.session.username)
+		res.render('fiction');
+	else
+		res.redirect('/');
 });
 
 app.get('/flies',function(req,res){
-	res.render('flies.ejs');
+	if(req.session.username)
+		res.render('flies');
+	else
+		res.redirect('/');
 });
 
 app.get('/grapes',function(req,res){
-	res.render('grapes.ejs');
+	if(req.session.username)
+		res.render('grapes');
+	else
+		res.redirect('/');
 });
 
 app.get('/home',function(req,res){
-	res.render('home.ejs');
+	if(req.session.username)
+		res.render('home');
+	else
+		res.redirect('/');
 });
 
 app.get('/leaves',function(req,res){
-	res.render('leaves.ejs');
+	if(req.session.username)
+		res.render('leaves');
+	else
+		res.redirect('/');
 });
 
 app.get('/login',function(req,res){
-	res.render('login.ejs');
+	if(req.session.username)
+		res.redirect('/');
+	else
+		res.render('login', {message: ''});
 });
 
 app.get('/mockingbird',function(req,res){
-	res.render('mockingbird.ejs');
+	if(req.session.username)
+		res.render('mockingbird');
+	else
+		res.redirect('/');
 });
 
 app.get('/novel',function(req,res){
-	res.render('novel.ejs');
+	if(req.session.username)
+		res.render('novel');
+	else
+		res.redirect('/');
 });
 
 app.get('/poetry',function(req,res){
-	res.render('poetry.ejs');
+	if(req.session.username)
+		res.render('poetry');
+	else
+		res.redirect('/');
 });
 
 app.get('/readlist',function(req,res){
-	res.render('readlist.ejs');
+	if(req.session.username){
+		res.render('readlist');
+	} else
+		res.redirect('/');
 });
 
 app.get('/registration',function(req,res){
-	res.render('registration.ejs');
+	res.render('registration', {message: ''});
 });
 
 app.get('/searchresults',function(req,res){
-	res.render('searchresults.ejs');
+	if(req.session.username)
+		res.render('searchresults');
+	else
+		res.redirect('/');
 });
 
 app.get('/sun',function(req,res){
-	res.render('sun.ejs');
+	if(req.session.username)
+		res.render('sun', {message: ''});
+	else
+		res.redirect('/');
 });
 
 app.post('/register',function(req,res){
@@ -86,12 +130,12 @@ app.post('/register',function(req,res){
 	}
 	
 	if(exist == 1) {
-		res.redirect('/registration');
+		res.render('registration', {message: 'User already registered'});
 	} else {
 		content.push({username: user, password: pass});
-		let write = JSON.stringify(content);
+		var write = JSON.stringify(content);
 		fs.writeFileSync('users.json', write);
-		res.redirect('/login');
+		res.redirect('/');
 	}
 });
 
@@ -109,10 +153,20 @@ app.post('/login',function(req,res){
 			exist = 1;
 	}
 	if(exist == 1) {
+		req.session.username = user;
 		res.redirect('/home');
 	} else {
-		res.redirect('/login');	
+		res.render('login', {message: 'Worng username or password'});
 	}
+});
+
+app.get('/logout',function(req,res){
+    req.session.destroy((err) => {
+        if(err) {
+            return console.log(err);
+        }
+        res.redirect('/');
+    });
 });
 
 if(process.env.PORT){
