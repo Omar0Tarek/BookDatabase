@@ -38,5 +38,16 @@
             </form>
         </div>
     </nav>
+    <div id="search-results">
+    	<%if(arr.length == 0) {%>
+    	<p style="color:white">Book Not Found</p>
+    	<%}else {%>
+            <ul>
+            <% arr.forEach((book) => { %>
+	        <li><a href="<%=book.address%>"><%=book.name%></a></li>
+            <% }); %>
+            </ul>
+        <%}%>
+    </div>
 </body>
 </html>

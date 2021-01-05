@@ -102,10 +102,13 @@ app.get('/registration',function(req,res){
 });
 
 app.get('/searchresults',function(req,res){
-	if(req.session.username)
-		res.render('searchresults');
-	else
+	if(req.session.username) {
+		var results = JSON.parse(decodeURIComponent(req.query.results));
+		res.render('searchresults',{arr: results});
+	}
+	else {
 		res.redirect('/');
+	}
 });
 
 app.get('/sun',function(req,res){
@@ -113,6 +116,20 @@ app.get('/sun',function(req,res){
 		res.render('sun', {message: ''});
 	else
 		res.redirect('/');
+});
+
+app.post('/search', function(req, res) {
+	var bookToSearch = req.body.Search.toLowerCase();
+	var books = [{name : 'Lord of the Flies', address : '/flies'}, {name : 'The Grapes of Wrath', address : '/grapes'},
+	{name : 'Leaves of Grass', address : '/leaves'}, {name : 'The Sun and Her Flowers', address : '/sun'}, {name : 'Dune', address : '/dune'},
+	{name : 'To Kill a Mockingbird', address : '/mockingbird'}];
+	var results = [];
+	for(var i = 0; i < books.length; i++) {
+		if(books[i].name.toLowerCase().includes(bookToSearch)) {
+			results.push(books[i]);
+		}
+	}
+	res.redirect('/searchresults?results=' + encodeURIComponent(JSON.stringify(results)));
 });
 
 app.post('/register',function(req,res){
