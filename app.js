@@ -22,28 +22,28 @@ app.get('/',function(req, res){
 
 app.get('/dune',function(req,res){
 	if(req.session.username)
-		res.render('dune');
+		res.render('dune',{message: ''});
 	else
 		res.redirect('/');
 });
 
 app.get('/fiction',function(req,res){
 	if(req.session.username)
-		res.render('fiction');
+		res.render('fiction',{message: ''});
 	else
 		res.redirect('/');
 });
 
 app.get('/flies',function(req,res){
 	if(req.session.username)
-		res.render('flies');
+		res.render('flies',{message: ''});
 	else
 		res.redirect('/');
 });
 
 app.get('/grapes',function(req,res){
 	if(req.session.username)
-		res.render('grapes');
+		res.render('grapes',{message: ''});
 	else
 		res.redirect('/');
 });
@@ -57,21 +57,21 @@ app.get('/home',function(req,res){
 
 app.get('/leaves',function(req,res){
 	if(req.session.username)
-		res.render('leaves');
+		res.render('leaves',{message: ''});
 	else
 		res.redirect('/');
 });
 
 app.get('/login',function(req,res){
 	if(req.session.username)
-		res.redirect('/');
+		res.redirect('/',);
 	else
 		res.render('login', {message: ''});
 });
 
 app.get('/mockingbird',function(req,res){
 	if(req.session.username)
-		res.render('mockingbird');
+		res.render('mockingbird',{message: ''});
 	else
 		res.redirect('/');
 });
@@ -92,11 +92,20 @@ app.get('/poetry',function(req,res){
 
 app.get('/readlist',function(req,res){
 	if(req.session.username){
-		res.render('readlist');
+		var user = req.session.username;
+		var data = fs.readFileSync("wanttoread.json");
+		var content = JSON.parse(data);		
+		var books=[];
+		for(var i = 0; i < content.length; i++){
+		var myobject = content[i];
+		if(myobject.username == user)
+		books.push(myobject.book);
+		}
+		res.render('readlist',{arr:books});
 	} else
 		res.redirect('/');
 });
-
+	
 app.get('/registration',function(req,res){
 	res.render('registration', {message: ''});
 });
@@ -156,6 +165,28 @@ app.post('/register',function(req,res){
 	}
 });
 
+app.post('/read',function(req,res){
+	
+	var user = req.session.username;
+	var data = fs.readFileSync("wanttoread.json");
+	var content = JSON.parse(data);
+	var exist = 0;
+	for(var i = 0; i < content.length; i++){
+		var myobject = content[i];
+		if(myobject.username == user && myobject.book == req.body.book)
+			exist = 1;
+	}
+	if(exist == 0) {
+		content.push({username: user, book: req.body.book});
+		var write = JSON.stringify(content);
+		fs.writeFileSync('wanttoread.json', write);
+	} 
+	else{
+		res.render(req.body.address, {message: 'This book is already in your readlist'});
+	}
+});
+
+
 app.post('/login',function(req,res){
 	var user = req.body.username;
 	var pass = req.body.password;
@@ -173,7 +204,7 @@ app.post('/login',function(req,res){
 		req.session.username = user;
 		res.redirect('/home');
 	} else {
-		res.render('login', {message: 'Worng username or password'});
+		res.render('login', {message: 'Wrong username or password'});
 	}
 });
 

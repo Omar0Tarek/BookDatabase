@@ -45,6 +45,12 @@
         #my {
             zoom: 110%;
         }
+		.messages{
+			position: fixed;
+			color: white;
+			left: 50px;
+            top: 550px;
+		}
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,14 +84,22 @@
         A poetry collection by American poet Walt Whitman (1819–1892), each poem of which is loosely connected and represents the celebration of his philosophy of life and humanity.
     </div>
     <div class="readlist">
+		<form method='post' action='/read'>
+		 <input type="hidden" name="book" value="Leaves of Grass" />
+		 <input type="hidden" name="address" value="leaves" />
         <button id="readlist" class="btn btn-secondary ml-3">Add to Want to Read List</button>
+		</form>
     </div>
     <div class="video">
 		<iframe width="480" height="360"
 			src="https://www.youtube.com/embed/01AL3EClMgI">
 		</iframe>
     </div>
-
+	<div>
+		<br>
+		<br>
+        <p class="messages"><%=message%></p>
+    </div>
 </body>
 
 </html>

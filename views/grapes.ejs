@@ -44,6 +44,12 @@
         #my {
             zoom: 110%;
         }
+		.messages{
+			position: fixed;
+			color: white;
+			left: 50px;
+            top: 550px;
+		}
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,12 +82,21 @@
         First published in 1939, Steinbeck’s Pulitzer Prize-winning epic of the Great Depression chronicles the Dust Bowl migration of the 1930s and tells the story of one Oklahoma farm family, the Joads—driven from their homestead and forced to travel west to the promised land of California.
     </div>
     <div class="readlist">
+		<form method='post' action='/read'>
+		 <input type="hidden" name="book" value="The Grapes of Wrath" />
+		 <input type="hidden" name="address" value="grapes" />
         <button id="readlist" class="btn btn-secondary ml-3">Add to Want to Read List</button>
+		</form>
     </div>
     <div class="video">
 		<iframe width="480" height="360"
 			src="https://www.youtube.com/embed/MOTBl9BCLsQ">
 		</iframe>
+    </div>
+	<div>
+		<br>
+		<br>
+        <p class="messages"><%=message%></p>
     </div>
 </body>
 </html>
